@@ -4,16 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Check Solana NFT Ownership</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/@solana/web3.js/1.31.0/web3.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@metaplex/js@latest"></script>
-</head>
-<body>
-    <h1>Check Solana NFT Ownership</h1>
-    <input type="text" id="solanaAddress" placeholder="Enter Solana Address" />
-    <button id="checkButton">Check NFT Ownership</button>
-    <p id="result"></p>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/@solana/web3.js/1.51.1/web3.min.js"></script>
+    <script type="module">
+        import { Metadata } from "https://cdn.jsdelivr.net/npm/@metaplex/js@latest";
 
-    <script>
         const COLLECTION_ID = "GzhXjRxLXWkzW6vDVyHgbYmqW75xrfh4WvgVKQ8XA1su";
 
         async function checkNFTOwnership(address) {
@@ -58,5 +52,11 @@
             resultElement.textContent = hasNFT ? 'This address owns an NFT from the collection!' : 'This address does not own any NFTs from the collection.';
         };
     </script>
+</head>
+<body>
+    <h1>Check Solana NFT Ownership</h1>
+    <input type="text" id="solanaAddress" placeholder="Enter Solana Address" />
+    <button id="checkButton">Check NFT Ownership</button>
+    <p id="result"></p>
 </body>
 </html>
