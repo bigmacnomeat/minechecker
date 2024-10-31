@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Solana NFT Ownership</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/@solana/web3.js/1.31.0/web3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@metaplex/js@latest"></script>
+</head>
+<body>
+    <h1>Check Solana NFT Ownership</h1>
+    <input type="text" id="solanaAddress" placeholder="Enter Solana Address" />
+    <button id="checkButton">Check NFT Ownership</button>
+    <p id="result"></p>
+
+    <script>
+        const COLLECTION_ID = "GzhXjRxLXWkzW6vDVyHgbYmqW75xrfh4WvgVKQ8XA1su";
+
+        async function checkNFTOwnership(address) {
+            // Create a connection to the Solana blockchain
+            const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
+
+            // Fetch the token accounts associated with the provided address
+            const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
+                new solanaWeb3.PublicKey(address),
+                { programId: solanaWeb3.TOKEN_PROGRAM_ID }
+            );
+
+            // Check if any of the token accounts contain an NFT from the specified collection
+            for (const { account } of tokenAccounts.value) {
+                const { data: { parsed: { info: { mint } } } } = account;
+
+                // Fetch metadata for the NFT
+                const metadataPDA = await metaplex.metadata.Metadata.getPDA(mint);
+                const metadata = await metaplex.metadata.Metadata.load(connection, metadataPDA);
+
+                // Check if the NFT belongs to the specified collection
+                if (metadata.data.creators) {
+                    const creators = metadata.data.creators.map(creator => creator.address);
+                    if (creators.includes(COLLECTION_ID)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        document.getElementById('checkButton').onclick = async () => {
+            const address = document.getElementById('solanaAddress').value.trim();
+            const resultElement = document.getElementById('result');
+
+            if (!solanaWeb3.PublicKey.isOnCurve(address)) {
+                resultElement.textContent = 'Invalid Solana address.';
+                return;
+            }
+
+            const hasNFT = await checkNFTOwnership(address);
+            resultElement.textContent = hasNFT ? 'This address owns an NFT from the collection!' : 'This address does not own any NFTs from the collection.';
+        };
+    </script>
+</body>
+</html>
