@@ -33,24 +33,29 @@
     <script>
         const COLLECTION_ID = "GzhXjRxLXWkzW6vDVyHgbYmqW75xrfh4WvgVKQ8XA1su"; // NFT collection ID
 
-        // Importing the Connection and PublicKey directly from the Solana Web3 library
         const { Connection, PublicKey } = window.solanaWeb3;
 
         async function checkNFTOwnership(address) {
             const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
             const publicKey = new PublicKey(address);
 
-            // Get NFT accounts by owner
             const tokenAccounts = await connection.getParsedTokenAccountsByOwner(publicKey);
             for (let account of tokenAccounts.value) {
                 const mintAddress = account.account.data.parsed.info.mint;
                 const metadataAddress = await getMetadataAddress(mintAddress);
                 const metadata = await connection.getAccountInfo(metadataAddress);
+                
+                // Debugging: Log raw metadata to inspect its structure
+                console.log('Raw metadata:', metadata);
+
                 if (metadata) {
                     const metadataData = decodeMetadata(metadata.data);
+                    console.log('Decoded metadata:', metadataData); // Debugging line
                     if (metadataData && metadataData.collection && metadataData.collection.address === COLLECTION_ID) {
                         return true; // NFT found in collection
                     }
+                } else {
+                    console.log(`No metadata found for mint address: ${mintAddress}`);
                 }
             }
             return false; // No NFT found
