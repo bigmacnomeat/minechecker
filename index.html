@@ -1,4 +1,4 @@
-à<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -66,8 +66,10 @@
                 const address = document.getElementById('solanaAddress').value.trim();
                 const resultElement = document.getElementById('result');
                 try {
-                    // Validate the Solana address
-                    if (!window.solanaWeb3.PublicKey.isOnCurve(address)) {
+                    // Validate the Solana address using PublicKey from window.solanaWeb3
+                    const { PublicKey } = window.solanaWeb3; // Extract PublicKey directly
+
+                    if (!PublicKey.isOnCurve(address)) {
                         resultElement.textContent = 'Invalid Solana address.';
                         return;
                     }
