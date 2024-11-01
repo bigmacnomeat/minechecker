@@ -32,7 +32,9 @@
 
     <script>
         const COLLECTION_ID = "YOUR_COLLECTION_ID"; // Replace with your NFT collection ID
-        const { Connection, PublicKey } = solanaWeb3;
+
+        // Importing the Connection and PublicKey directly from the Solana Web3 library
+        const { Connection, PublicKey } = window.solanaWeb3;
 
         async function checkNFTOwnership(address) {
             const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
