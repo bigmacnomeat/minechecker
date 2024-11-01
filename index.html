@@ -12,8 +12,28 @@
     <p id="result"></p>
 
     <script type="module">
-        // Use default import for EventEmitter
-        import EventEmitter from 'https://cdn.jsdelivr.net/npm/events@3.3.0/events.js'; 
+        // Basic implementation of EventEmitter
+        class EventEmitter {
+            constructor() {
+                this.events = {};
+            }
+
+            on(event, listener) {
+                if (!this.events[event]) {
+                    this.events[event] = [];
+                }
+                this.events[event].push(listener);
+            }
+
+            emit(event, ...args) {
+                if (this.events[event]) {
+                    for (const listener of this.events[event]) {
+                        listener(...args);
+                    }
+                }
+            }
+        }
+
         import { Connection, PublicKey } from "https://esm.sh/@solana/web3.js@1.31.0";
         import { TOKEN_PROGRAM_ID } from "https://esm.sh/@solana/spl-token@0.2.0";
 
@@ -76,7 +96,6 @@
 
             // Add methods for your class
         }
-
     </script>
 </body>
 </html>
