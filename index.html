@@ -12,29 +12,25 @@
     <p id="result"></p>
 
     <script type="module">
-        import { Connection, PublicKey, TOKEN_PROGRAM_ID } from "https://cdn.jsdelivr.net/npm/@solana/web3.js@latest";
+        import { Connection, PublicKey, TOKEN_PROGRAM_ID } from "https://esm.run/@solana/web3.js";
 
         const COLLECTION_ID = "GzhXjRxLXWkzW6vDVyHgbYmqW75xrfh4WvgVKQ8XA1su";
 
         async function checkNFTOwnership(address) {
-            // Create a connection to the Solana blockchain
             const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 
-            // Fetch the token accounts associated with the provided address
+            // Fetch token accounts for the given address
             const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
                 new PublicKey(address),
                 { programId: TOKEN_PROGRAM_ID }
             );
 
-            // Check if any token account's metadata matches the COLLECTION_ID
             for (const { account } of tokenAccounts.value) {
                 const mintAddress = account.data.parsed.info.mint;
-
-                // Call Solana API to get metadata directly by mint address
                 const metadataAddress = await getMetadataAddress(new PublicKey(mintAddress));
                 const metadata = await connection.getAccountInfo(metadataAddress);
 
-                // If metadata contains COLLECTION_ID as a creator, return true
+                // Check metadata for the COLLECTION_ID
                 if (metadata && new TextDecoder().decode(metadata.data).includes(COLLECTION_ID)) {
                     return true;
                 }
