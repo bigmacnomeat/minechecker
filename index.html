@@ -17,13 +17,14 @@
 
     <script>
         const { Connection, PublicKey } = window.solanaWeb3;
-        const NFT_MINT_ADDRESS = new PublicKey("GzhXjRxLXWkzW6vDVyHgbYmqW75xrfh4WvgVKQ8XA1su"); // Replace with your NFT mint address
+        const NFT_MINT_ADDRESS = new PublicKey("GzhXjRxLXWkzW6vDVyHgbYmqW75xrfh4WvgVKQ8XA1su"); // Your NFT mint address
 
         async function checkNFTOwnership(address) {
             const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
             const publicKey = new PublicKey(address);
 
             try {
+                // Fetch the token accounts owned by the address
                 const tokenAccounts = await connection.getParsedTokenAccountsByOwner(publicKey);
 
                 for (const { account } of tokenAccounts.value) {
@@ -45,6 +46,7 @@
             const address = document.getElementById('solanaAddress').value.trim();
             const resultElement = document.getElementById('result');
             
+            // Validate the Solana address format
             const isValidAddress = /^([1-9A-HJ-NP-Za-km-z]{32}|[1-9A-HJ-NP-Za-km-z]{44})$/.test(address);
             if (!isValidAddress) {
                 resultElement.textContent = 'Invalid Solana address.';
