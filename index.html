@@ -12,14 +12,16 @@
     <p id="result"></p>
 
     <script type="module">
-        // Importing the necessary libraries from CDNs
-        import { Connection, PublicKey } from "https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0";
-        import { TOKEN_PROGRAM_ID } from "https://cdn.jsdelivr.net/npm/@solana/spl-token@0.2.0";
+        // Import Solana libraries from CDN
+        import { Connection, PublicKey } from "https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/dist/index.iife.js";
+        import { TOKEN_PROGRAM_ID } from "https://cdn.jsdelivr.net/npm/@solana/spl-token@0.2.0/dist/index.iife.js";
 
         const COLLECTION_ID = "GzhXjRxLXWkzW6vDVyHgbYmqW75xrfh4WvgVKQ8XA1su";
 
         async function checkNFTOwnership(address) {
             const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
+
+            // Fetch token accounts for the given address
             const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
                 new PublicKey(address),
                 { programId: TOKEN_PROGRAM_ID }
@@ -30,12 +32,12 @@
                 const metadataAddress = await getMetadataAddress(new PublicKey(mintAddress));
                 const metadata = await connection.getAccountInfo(metadataAddress);
 
-                // Check if the metadata contains the collection ID
+                // Check metadata for the COLLECTION_ID
                 if (metadata && new TextDecoder().decode(metadata.data).includes(COLLECTION_ID)) {
-                    return true; // NFT ownership confirmed
+                    return true;
                 }
             }
-            return false; // No ownership found
+            return false;
         }
 
         async function getMetadataAddress(mint) {
@@ -58,55 +60,13 @@
                     }
 
                     const hasNFT = await checkNFTOwnership(address);
-                    resultElement.textContent = hasNFT ? 'Yes, this address owns an NFT from the collection!' : 'No, this address does not own any NFTs from the collection.';
+                    resultElement.textContent = hasNFT ? 'This address owns an NFT from the collection!' : 'This address does not own any NFTs from the collection.';
                 } catch (error) {
                     console.error('Error checking NFT ownership:', error);
                     resultElement.textContent = 'An error occurred while checking ownership.';
                 }
             };
         });
-
-        // Basic EventEmitter implementation
-        class EventEmitter {
-            constructor() {
-                this.events = {};
-            }
-
-            on(event, listener) {
-                if (!this.events[event]) {
-                    this.events[event] = [];
-                }
-                this.events[event].push(listener);
-            }
-
-            emit(event, ...args) {
-                if (this.events[event]) {
-                    for (const listener of this.events[event]) {
-                        listener(...args);
-                    }
-                }
-            }
-        }
-
-        // CommonClient class that extends EventEmitter
-        class CommonClient extends EventEmitter {
-            constructor() {
-                super(); // Call the parent class constructor
-                // Additional initialization if needed
-            }
-
-            // Example method in CommonClient
-            exampleMethod() {
-                console.log('Example method called');
-            }
-        }
-
-        // Create an instance of CommonClient
-        const client = new CommonClient();
-        client.on('testEvent', () => {
-            console.log('Test event fired');
-        });
-        client.emit('testEvent'); // Emit a test event
     </script>
 </body>
 </html>
