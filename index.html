@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Check Solana NFT Ownership</title>
-    <!-- Include Axios from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module">
         // Import the required libraries
@@ -47,13 +46,22 @@
                 const address = document.getElementById('solanaAddress').value.trim();
                 const resultElement = document.getElementById('result');
 
+                console.log(`Checking ownership for address: ${address}`);
+
                 if (!PublicKey.isOnCurve(address)) {
                     resultElement.textContent = 'Invalid Solana address.';
+                    console.log('Invalid address format');
                     return;
                 }
 
-                const hasNFT = await checkNFTOwnership(address);
-                resultElement.textContent = hasNFT ? 'This address owns an NFT from the collection!' : 'This address does not own any NFTs from the collection.';
+                try {
+                    const hasNFT = await checkNFTOwnership(address);
+                    resultElement.textContent = hasNFT ? 'This address owns an NFT from the collection!' : 'This address does not own any NFTs from the collection.';
+                    console.log(`Ownership check result: ${hasNFT}`);
+                } catch (error) {
+                    console.error('Error checking NFT ownership:', error);
+                    resultElement.textContent = 'An error occurred while checking ownership.';
+                }
             };
         });
     </script>
