@@ -36,7 +36,7 @@
         // Function to check NFT ownership using Solscan API
         async function checkNFTOwnership(address) {
             try {
-                const proxyUrl = "https://cors-anywhere.herokuapp.com/"; // CORS proxy
+                const proxyUrl = "https://cors-anywhere.herokuapp.com/"; // Use a different CORS proxy
                 const apiUrl = `https://api.solscan.io/account/tokens?account=${address}&cluster=mainnet`;
                 
                 // Fetch tokens for the given address using the proxy
