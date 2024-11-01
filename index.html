@@ -31,7 +31,7 @@
     <div id="result"></div>
 
     <script>
-        const COLLECTION_ID = "YOUR_COLLECTION_ID"; // Replace with your NFT collection ID
+        const COLLECTION_ID = "GzhXjRxLXWkzW6vDVyHgbYmqW75xrfh4WvgVKQ8XA1su"; // NFT collection ID
 
         // Importing the Connection and PublicKey directly from the Solana Web3 library
         const { Connection, PublicKey } = window.solanaWeb3;
@@ -46,8 +46,11 @@
                 const mintAddress = account.account.data.parsed.info.mint;
                 const metadataAddress = await getMetadataAddress(mintAddress);
                 const metadata = await connection.getAccountInfo(metadataAddress);
-                if (metadata && new TextDecoder().decode(metadata.data).includes(COLLECTION_ID)) {
-                    return true; // NFT found in collection
+                if (metadata) {
+                    const metadataData = decodeMetadata(metadata.data);
+                    if (metadataData && metadataData.collection && metadataData.collection.address === COLLECTION_ID) {
+                        return true; // NFT found in collection
+                    }
                 }
             }
             return false; // No NFT found
@@ -59,6 +62,11 @@
                 [Buffer.from("metadata"), METADATA_PROGRAM_ID.toBuffer(), mint.toBuffer()],
                 METADATA_PROGRAM_ID
             ))[0];
+        }
+
+        function decodeMetadata(metadataBytes) {
+            const metadataString = new TextDecoder().decode(metadataBytes);
+            return JSON.parse(metadataString);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
