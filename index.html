@@ -12,7 +12,7 @@
     <p id="result"></p>
 
     <script type="module">
-        // Import necessary Solana web3.js and SPL token libraries
+        // Importing the necessary libraries from CDNs
         import { Connection, PublicKey } from "https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0";
         import { TOKEN_PROGRAM_ID } from "https://cdn.jsdelivr.net/npm/@solana/spl-token@0.2.0";
 
@@ -66,7 +66,7 @@
             };
         });
 
-        // Example EventEmitter implementation
+        // Basic EventEmitter implementation
         class EventEmitter {
             constructor() {
                 this.events = {};
@@ -95,8 +95,18 @@
                 // Additional initialization if needed
             }
 
-            // Add any methods specific to CommonClient here
+            // Example method in CommonClient
+            exampleMethod() {
+                console.log('Example method called');
+            }
         }
+
+        // Create an instance of CommonClient
+        const client = new CommonClient();
+        client.on('testEvent', () => {
+            console.log('Test event fired');
+        });
+        client.emit('testEvent'); // Emit a test event
     </script>
 </body>
 </html>
