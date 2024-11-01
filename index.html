@@ -66,10 +66,10 @@
                 const address = document.getElementById('solanaAddress').value.trim();
                 const resultElement = document.getElementById('result');
                 try {
-                    // Validate the Solana address using PublicKey from window.solanaWeb3
-                    const { PublicKey } = window.solanaWeb3; // Extract PublicKey directly
-
-                    if (!PublicKey.isOnCurve(address)) {
+                    // Validate the Solana address using a simple regex check
+                    const isValidAddress = /^([1-9A-HJ-NP-Za-km-z]{32}|[1-9A-HJ-NP-Za-km-z]{44})$/.test(address);
+                    
+                    if (!isValidAddress) {
                         resultElement.textContent = 'Invalid Solana address.';
                         return;
                     }
