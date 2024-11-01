@@ -36,7 +36,7 @@
         // Function to check NFT ownership using Solscan API
         async function checkNFTOwnership(address) {
             try {
-                // Correct API endpoint to fetch tokens for the given address
+                // Fetch tokens for the given address from Solscan API
                 const response = await fetch(`https://api.solscan.io/account/tokens?account=${address}&cluster=mainnet`);
 
                 // Check if the response is OK (status in the range 200-299)
@@ -45,7 +45,7 @@
                 }
 
                 const data = await response.json();
-                
+
                 if (data && data.data) {
                     // Iterate through the token data to find the collection ID
                     for (let token of data.data) {
