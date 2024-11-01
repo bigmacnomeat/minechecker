@@ -44,6 +44,10 @@
             for (let account of tokenAccounts.value) {
                 const mintAddress = account.account.data.parsed.info.mint;
                 const metadataAddress = await getMetadataAddress(mintAddress);
+                
+                // Log the metadata address
+                console.log(`Fetching metadata for mint: ${mintAddress}, metadata address: ${metadataAddress.toBase58()}`);
+
                 const metadata = await connection.getAccountInfo(metadataAddress);
                 
                 // Check if metadata is null
@@ -52,6 +56,9 @@
                     continue; // Skip to the next account
                 }
 
+                // Log the raw metadata length and info for debugging
+                console.log(`Raw metadata length for ${mintAddress}: ${metadata.data.length}`);
+                
                 try {
                     // Decode metadata
                     const metadataData = decodeMetadata(metadata.data);
@@ -79,6 +86,7 @@
         function decodeMetadata(metadataBytes) {
             try {
                 const metadataString = new TextDecoder().decode(metadataBytes);
+                console.log(`Decoded string: ${metadataString}`); // Log the decoded string
                 return JSON.parse(metadataString);
             } catch (error) {
                 console.error('Error decoding metadata:', error);
