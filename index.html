@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solana NFT Checker</title>
-
+    
+    <!-- Include Solana Web3.js -->
+    <script src="https://unpkg.com/@solana/web3.js@latest/dist/index.production.min.js"></script>
+    <script src="https://unpkg.com/@solana/spl-token@latest/dist/spl-token.min.js"></script>
+    <script src="https://unpkg.com/tweetnacl@latest/tweetnacl.min.js"></script>
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,34 +33,6 @@
     <script>
         const COLLECTION_ID = "GzhXjRxLXWkzW6vDVyHgbYmqW75xrfh4WvgVKQ8XA1su"; // Your NFT collection ID
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('checkButton').onclick = async () => {
-                const address = document.getElementById('solanaAddress').value.trim();
-                const resultElement = document.getElementById('result');
-
-                try {
-                    // Check if the address is valid
-                    if (!isValidSolanaAddress(address)) {
-                        resultElement.textContent = 'Invalid Solana address.';
-                        return;
-                    }
-
-                    const hasNFT = await checkNFTOwnership(address);
-                    resultElement.textContent = hasNFT 
-                        ? 'This address owns an NFT from the collection!' 
-                        : 'This address does not own any NFTs from the collection.';
-                } catch (error) {
-                    console.error('Error checking NFT ownership:', error);
-                    resultElement.textContent = 'An error occurred while checking ownership.';
-                }
-            };
-        });
-
-        // Validate Solana address
-        function isValidSolanaAddress(address) {
-            return address.length === 44; // Basic check for Solana addresses
-        }
-
         // Function to check NFT ownership using Solscan API
         async function checkNFTOwnership(address) {
             try {
@@ -67,8 +44,7 @@
                 }
 
                 const data = await response.json();
-                console.log('API Response:', data); // Log the response for debugging
-
+                
                 if (data && data.data) {
                     // Iterate through the token data to find the collection ID
                     for (let token of data.data) {
@@ -83,6 +59,25 @@
                 throw error; // Rethrow the error to be handled in the calling function
             }
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('checkButton').onclick = async () => {
+                const address = document.getElementById('solanaAddress').value.trim();
+                const resultElement = document.getElementById('result');
+                try {
+                    // Validate the Solana address
+                    if (!window.solanaWeb3.PublicKey.isOnCurve(address)) {
+                        resultElement.textContent = 'Invalid Solana address.';
+                        return;
+                    }
+                    const hasNFT = await checkNFTOwnership(address);
+                    resultElement.textContent = hasNFT ? 'This address owns an NFT from the collection!' : 'This address does not own any NFTs from the collection.';
+                } catch (error) {
+                    console.error('Error checking NFT ownership:', error);
+                    resultElement.textContent = 'An error occurred while checking ownership.';
+                }
+            };
+        });
     </script>
 </body>
 </html>
