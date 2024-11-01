@@ -33,10 +33,10 @@
 
                 // Check metadata for the COLLECTION_ID
                 if (metadata && new TextDecoder().decode(metadata.data).includes(COLLECTION_ID)) {
-                    return true;
+                    return true; // NFT from the collection found
                 }
             }
-            return false;
+            return false; // No NFT from the collection found
         }
 
         async function getMetadataAddress(mint) {
@@ -59,7 +59,7 @@
                     }
 
                     const hasNFT = await checkNFTOwnership(address);
-                    resultElement.textContent = hasNFT ? 'This address owns an NFT from the collection!' : 'This address does not own any NFTs from the collection.';
+                    resultElement.textContent = hasNFT ? 'Yes, this address owns an NFT from the collection!' : 'No, this address does not own any NFTs from the collection.';
                 } catch (error) {
                     console.error('Error checking NFT ownership:', error);
                     resultElement.textContent = 'An error occurred while checking ownership.';
