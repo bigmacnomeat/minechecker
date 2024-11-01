@@ -33,10 +33,10 @@
 
                 // Check metadata for the COLLECTION_ID
                 if (metadata && new TextDecoder().decode(metadata.data).includes(COLLECTION_ID)) {
-                    return true; // NFT from the collection found
+                    return true;
                 }
             }
-            return false; // No NFT from the collection found
+            return false;
         }
 
         async function getMetadataAddress(mint) {
