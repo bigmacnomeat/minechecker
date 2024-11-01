@@ -4,18 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Check Solana NFT Ownership</title>
-</head>
-<body>
-    <h1>Check Solana NFT Ownership</h1>
-    <input type="text" id="solanaAddress" placeholder="Enter Solana Address" />
-    <button id="checkButton">Check NFT Ownership</button>
-    <p id="result"></p>
-
     <script type="module">
-        // Corrected CDN links
-        import { Connection, PublicKey } from "https://cdn.jsdelivr.net/npm/@solana/web3.js@1.60.0/dist/web3.min.js"; // Latest version
-        import { TOKEN_PROGRAM_ID } from "https://cdn.jsdelivr.net/npm/@solana/spl-token@0.3.0/dist/spl-token.min.js"; // Specified version
-        import * as nacl from "https://cdn.jsdelivr.net/npm/tweetnacl@1.0.3/tweetnacl.js"; // This version should work
+        import { Connection, PublicKey } from 'https://cdn.jsdelivr.net/npm/@solana/web3.js@1.47.1/dist/web3.min.js';
+        import { TOKEN_PROGRAM_ID } from 'https://cdn.jsdelivr.net/npm/@solana/spl-token@0.3.0/dist/spl-token.min.js';
 
         const COLLECTION_ID = "GzhXjRxLXWkzW6vDVyHgbYmqW75xrfh4WvgVKQ8XA1su";
 
@@ -69,5 +60,11 @@
             };
         });
     </script>
+</head>
+<body>
+    <h1>Check Solana NFT Ownership</h1>
+    <input type="text" id="solanaAddress" placeholder="Enter Solana Address" />
+    <button id="checkButton">Check NFT Ownership</button>
+    <p id="result"></p>
 </body>
 </html>
