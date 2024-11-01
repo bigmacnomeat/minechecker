@@ -14,32 +14,32 @@
     <script type="module">
         import { Connection, PublicKey } from "https://esm.sh/@solana/web3.js@1.31.0";
         import { TOKEN_PROGRAM_ID } from "https://esm.sh/@solana/spl-token@0.2.0";
-        
-        const COLLECTION_ID = "GzhXjRxLXWkzW6vDVyHgbYmqW75xrfh4WvgVKQ8XA1su";
+
+        const COLLECTION_ID = "GzhXjRxLXWkzW6vDVyHgbYmqW75xrfh4WvgVKQ8XA1su"; // Replace with your collection ID
 
         async function checkNFTOwnership(address) {
             const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 
-            try {
-                const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
-                    new PublicKey(address),
-                    { programId: TOKEN_PROGRAM_ID }
-                );
+            // Fetch token accounts for the given address
+            const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
+                new PublicKey(address),
+                { programId: TOKEN_PROGRAM_ID }
+            );
 
-                for (const { account } of tokenAccounts.value) {
-                    const mintAddress = account.data.parsed.info.mint;
-                    const metadataAddress = await getMetadataAddress(new PublicKey(mintAddress));
-                    const metadata = await connection.getAccountInfo(metadataAddress);
+            for (const { account } of tokenAccounts.value) {
+                const mintAddress = account.data.parsed.info.mint;
+                const metadataAddress = await getMetadataAddress(new PublicKey(mintAddress));
+                const metadata = await connection.getAccountInfo(metadataAddress);
 
-                    // Check metadata for the COLLECTION_ID
-                    if (metadata && new TextDecoder().decode(metadata.data).includes(COLLECTION_ID)) {
-                        return true; // NFT found
+                // Check if metadata exists and contains the COLLECTION_ID
+                if (metadata) {
+                    const metadataData = new TextDecoder().decode(metadata.data);
+                    if (metadataData.includes(COLLECTION_ID)) {
+                        return true;
                     }
                 }
-            } catch (error) {
-                console.error('Error in checkNFTOwnership:', error);
             }
-            return false; // NFT not found
+            return false;
         }
 
         async function getMetadataAddress(mint) {
@@ -55,13 +55,18 @@
                 const address = document.getElementById('solanaAddress').value.trim();
                 const resultElement = document.getElementById('result');
 
-                if (!PublicKey.isOnCurve(address)) {
-                    resultElement.textContent = 'Invalid Solana address.';
-                    return;
-                }
+                try {
+                    if (!PublicKey.isOnCurve(address)) {
+                        resultElement.textContent = 'Invalid Solana address.';
+                        return;
+                    }
 
-                const hasNFT = await checkNFTOwnership(address);
-                resultElement.textContent = hasNFT ? 'Yes, this address owns an NFT from the collection!' : 'No, this address does not own any NFTs from the collection.';
+                    const hasNFT = await checkNFTOwnership(address);
+                    resultElement.textContent = hasNFT ? 'Yes, this address owns an NFT from the collection!' : 'No, this address does not own any NFTs from the collection.';
+                } catch (error) {
+                    console.error('Error checking NFT ownership:', error);
+                    resultElement.textContent = 'An error occurred while checking ownership.';
+                }
             };
         });
     </script>
