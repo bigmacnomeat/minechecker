@@ -12,7 +12,8 @@
     <p id="result"></p>
 
     <script type="module">
-        import { EventEmitter } from 'https://cdn.jsdelivr.net/npm/events@3.3.0/events.js'; // Adjust import
+        // Use default import for EventEmitter
+        import EventEmitter from 'https://cdn.jsdelivr.net/npm/events@3.3.0/events.js'; 
         import { Connection, PublicKey } from "https://esm.sh/@solana/web3.js@1.31.0";
         import { TOKEN_PROGRAM_ID } from "https://esm.sh/@solana/spl-token@0.2.0";
 
