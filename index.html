@@ -12,8 +12,7 @@
     <p id="result"></p>
 
     <script type="module">
-        // Import EventEmitter as a named export
-        import { EventEmitter } from 'https://cdn.jsdelivr.net/npm/events@3.3.0/events.js'; 
+        import { EventEmitter } from 'https://cdn.jsdelivr.net/npm/events@3.3.0/events.js'; // Adjust import
         import { Connection, PublicKey } from "https://esm.sh/@solana/web3.js@1.31.0";
         import { TOKEN_PROGRAM_ID } from "https://esm.sh/@solana/spl-token@0.2.0";
 
@@ -22,7 +21,6 @@
         async function checkNFTOwnership(address) {
             const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 
-            // Fetch token accounts for the given address
             const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
                 new PublicKey(address),
                 { programId: TOKEN_PROGRAM_ID }
@@ -33,12 +31,11 @@
                 const metadataAddress = await getMetadataAddress(new PublicKey(mintAddress));
                 const metadata = await connection.getAccountInfo(metadataAddress);
 
-                // Check metadata for the COLLECTION_ID
                 if (metadata && new TextDecoder().decode(metadata.data).includes(COLLECTION_ID)) {
-                    return true; // The address owns an NFT from the collection
+                    return true; // Address owns the NFT
                 }
             }
-            return false; // The address does not own an NFT from the collection
+            return false; // Address does not own the NFT
         }
 
         async function getMetadataAddress(mint) {
@@ -69,14 +66,14 @@
             };
         });
 
-        // Example of using modern inheritance
+        // Example of creating a CommonClient class extending EventEmitter
         class CommonClient extends EventEmitter {
             constructor() {
-                super(); // Call the constructor of the parent class
-                // Initialize your properties here
+                super(); // Call the parent class constructor
+                // Initialize properties if needed
             }
 
-            // Define your methods here
+            // Add methods for your class
         }
 
     </script>
