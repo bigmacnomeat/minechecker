@@ -12,6 +12,8 @@
     <p id="result"></p>
 
     <script type="module">
+        // Import EventEmitter as a named export
+        import { EventEmitter } from 'https://cdn.jsdelivr.net/npm/events@3.3.0/events.js'; 
         import { Connection, PublicKey } from "https://esm.sh/@solana/web3.js@1.31.0";
         import { TOKEN_PROGRAM_ID } from "https://esm.sh/@solana/spl-token@0.2.0";
 
@@ -67,7 +69,7 @@
             };
         });
 
-        // Example of using modern inheritance if you want to define a client class
+        // Example of using modern inheritance
         class CommonClient extends EventEmitter {
             constructor() {
                 super(); // Call the constructor of the parent class
