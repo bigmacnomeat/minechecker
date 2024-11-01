@@ -4,18 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Check Solana NFT Ownership</title>
-</head>
-<body>
-    <h1>Check Solana NFT Ownership</h1>
-    <input type="text" id="solanaAddress" placeholder="Enter Solana Address" />
-    <button id="checkButton">Check NFT Ownership</button>
-    <p id="result"></p>
-
     <script type="module">
+        // Import required libraries
         import { Connection, PublicKey } from "https://esm.sh/@solana/web3.js@1.31.0";
         import { TOKEN_PROGRAM_ID } from "https://esm.sh/@solana/spl-token@0.2.0";
+        import EventEmitter from 'https://cdn.jsdelivr.net/npm/events@3.3.0/events.js'; // Use a CDN or local path
 
-        const COLLECTION_ID = "GzhXjRxLXWkzW6vDVyHgbYmqW75xrfh4WvgVKQ8XA1su"; // Replace with your collection ID
+        // Define the CommonClient class
+        function CommonClient() {
+            EventEmitter.call(this); // Call the parent constructor
+            // Additional initialization logic can go here
+        }
+
+        // Set up inheritance from EventEmitter
+        CommonClient.prototype = Object.create(EventEmitter.prototype);
+        CommonClient.prototype.constructor = CommonClient;
+
+        const COLLECTION_ID = "GzhXjRxLXWkzW6vDVyHgbYmqW75xrfh4WvgVKQ8XA1su";
 
         async function checkNFTOwnership(address) {
             const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
@@ -31,12 +36,9 @@
                 const metadataAddress = await getMetadataAddress(new PublicKey(mintAddress));
                 const metadata = await connection.getAccountInfo(metadataAddress);
 
-                // Check if metadata exists and contains the COLLECTION_ID
-                if (metadata) {
-                    const metadataData = new TextDecoder().decode(metadata.data);
-                    if (metadataData.includes(COLLECTION_ID)) {
-                        return true;
-                    }
+                // Check metadata for the COLLECTION_ID
+                if (metadata && new TextDecoder().decode(metadata.data).includes(COLLECTION_ID)) {
+                    return true;
                 }
             }
             return false;
@@ -70,5 +72,11 @@
             };
         });
     </script>
+</head>
+<body>
+    <h1>Check Solana NFT Ownership</h1>
+    <input type="text" id="solanaAddress" placeholder="Enter Solana Address" />
+    <button id="checkButton">Check NFT Ownership</button>
+    <p id="result"></p>
 </body>
 </html>
