@@ -3,28 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Check Solana NFT Ownership</title>
-    <script type="module">
-        import { Connection, PublicKey } from 'https://cdn.jsdelivr.net/npm/@solana/web3.js@1.47.1/dist/web3.min.js';
-        import { TOKEN_PROGRAM_ID } from 'https://cdn.jsdelivr.net/npm/@solana/spl-token@0.3.0/dist/spl-token.min.js';
+    <title>Solana NFT Checker</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@solana/web3.js@2.0.0/dist/web3.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@solana/spl-token@0.3.0/dist/spl-token.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tweetnacl@1.0.3/tweetnacl.js"></script>
+</head>
+<body>
+    <h1>Solana NFT Checker</h1>
+    <input type="text" id="solanaAddress" placeholder="Enter Solana Address" required>
+    <button id="checkButton">Check NFT Ownership</button>
+    <div id="result"></div>
 
-        const COLLECTION_ID = "GzhXjRxLXWkzW6vDVyHgbYmqW75xrfh4WvgVKQ8XA1su";
+    <script>
+        const { Connection, PublicKey } = solanaWeb3;
+
+        // Replace with your actual collection ID
+        const COLLECTION_ID = 'YOUR_COLLECTION_ID_HERE';
 
         async function checkNFTOwnership(address) {
-            const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
+            const connection = new Connection("https://api.mainnet-beta.solana.com");
+            const publicKey = new PublicKey(address);
 
-            // Fetch token accounts for the given address
-            const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
-                new PublicKey(address),
-                { programId: TOKEN_PROGRAM_ID }
-            );
+            // Fetch accounts associated with the public key
+            const accounts = await connection.getParsedTokenAccountsByOwner(publicKey, {
+                programId: splToken.TOKEN_PROGRAM_ID,
+            });
 
-            for (const { account } of tokenAccounts.value) {
-                const mintAddress = account.data.parsed.info.mint;
-                const metadataAddress = await getMetadataAddress(new PublicKey(mintAddress));
+            for (const accountInfo of accounts.value) {
+                const mintAddress = accountInfo.account.data.parsed.info.mint;
+
+                // Fetch metadata address
+                const metadataAddress = await getMetadataAddress(mintAddress);
                 const metadata = await connection.getAccountInfo(metadataAddress);
 
-                // Check metadata for the COLLECTION_ID
                 if (metadata && new TextDecoder().decode(metadata.data).includes(COLLECTION_ID)) {
                     return true;
                 }
@@ -52,7 +63,9 @@
                     }
 
                     const hasNFT = await checkNFTOwnership(address);
-                    resultElement.textContent = hasNFT ? 'This address owns an NFT from the collection!' : 'This address does not own any NFTs from the collection.';
+                    resultElement.textContent = hasNFT 
+                        ? 'This address owns an NFT from the collection!' 
+                        : 'This address does not own any NFTs from the collection.';
                 } catch (error) {
                     console.error('Error checking NFT ownership:', error);
                     resultElement.textContent = 'An error occurred while checking ownership.';
@@ -60,11 +73,5 @@
             };
         });
     </script>
-</head>
-<body>
-    <h1>Check Solana NFT Ownership</h1>
-    <input type="text" id="solanaAddress" placeholder="Enter Solana Address" />
-    <button id="checkButton">Check NFT Ownership</button>
-    <p id="result"></p>
 </body>
 </html>
