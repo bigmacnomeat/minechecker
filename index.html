@@ -12,36 +12,14 @@
     <p id="result"></p>
 
     <script type="module">
-        // Basic implementation of EventEmitter
-        class EventEmitter {
-            constructor() {
-                this.events = {};
-            }
-
-            on(event, listener) {
-                if (!this.events[event]) {
-                    this.events[event] = [];
-                }
-                this.events[event].push(listener);
-            }
-
-            emit(event, ...args) {
-                if (this.events[event]) {
-                    for (const listener of this.events[event]) {
-                        listener(...args);
-                    }
-                }
-            }
-        }
-
-        import { Connection, PublicKey } from "https://esm.sh/@solana/web3.js@1.31.0";
-        import { TOKEN_PROGRAM_ID } from "https://esm.sh/@solana/spl-token@0.2.0";
+        // Import necessary Solana web3.js and SPL token libraries
+        import { Connection, PublicKey } from "https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0";
+        import { TOKEN_PROGRAM_ID } from "https://cdn.jsdelivr.net/npm/@solana/spl-token@0.2.0";
 
         const COLLECTION_ID = "GzhXjRxLXWkzW6vDVyHgbYmqW75xrfh4WvgVKQ8XA1su";
 
         async function checkNFTOwnership(address) {
             const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
-
             const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
                 new PublicKey(address),
                 { programId: TOKEN_PROGRAM_ID }
@@ -52,11 +30,12 @@
                 const metadataAddress = await getMetadataAddress(new PublicKey(mintAddress));
                 const metadata = await connection.getAccountInfo(metadataAddress);
 
+                // Check if the metadata contains the collection ID
                 if (metadata && new TextDecoder().decode(metadata.data).includes(COLLECTION_ID)) {
-                    return true; // Address owns the NFT
+                    return true; // NFT ownership confirmed
                 }
             }
-            return false; // Address does not own the NFT
+            return false; // No ownership found
         }
 
         async function getMetadataAddress(mint) {
@@ -87,14 +66,36 @@
             };
         });
 
-        // Example of creating a CommonClient class extending EventEmitter
+        // Example EventEmitter implementation
+        class EventEmitter {
+            constructor() {
+                this.events = {};
+            }
+
+            on(event, listener) {
+                if (!this.events[event]) {
+                    this.events[event] = [];
+                }
+                this.events[event].push(listener);
+            }
+
+            emit(event, ...args) {
+                if (this.events[event]) {
+                    for (const listener of this.events[event]) {
+                        listener(...args);
+                    }
+                }
+            }
+        }
+
+        // CommonClient class that extends EventEmitter
         class CommonClient extends EventEmitter {
             constructor() {
                 super(); // Call the parent class constructor
-                // Initialize properties if needed
+                // Additional initialization if needed
             }
 
-            // Add methods for your class
+            // Add any methods specific to CommonClient here
         }
     </script>
 </body>
