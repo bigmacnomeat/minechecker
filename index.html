@@ -65,8 +65,13 @@
         }
 
         function decodeMetadata(metadataBytes) {
-            const metadataString = new TextDecoder().decode(metadataBytes);
-            return JSON.parse(metadataString);
+            try {
+                const metadataString = new TextDecoder().decode(metadataBytes);
+                return JSON.parse(metadataString);
+            } catch (error) {
+                console.error('Error decoding metadata:', error);
+                return null; // Return null if decoding fails
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
