@@ -39,23 +39,30 @@
             const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
             const publicKey = new PublicKey(address);
 
+            // Fetch token accounts owned by the public key
             const tokenAccounts = await connection.getParsedTokenAccountsByOwner(publicKey);
             for (let account of tokenAccounts.value) {
                 const mintAddress = account.account.data.parsed.info.mint;
                 const metadataAddress = await getMetadataAddress(mintAddress);
                 const metadata = await connection.getAccountInfo(metadataAddress);
                 
-                // Debugging: Log raw metadata to inspect its structure
-                console.log('Raw metadata:', metadata);
+                // Check if metadata is null
+                if (!metadata) {
+                    console.log(`No metadata found for mint address: ${mintAddress}`);
+                    continue; // Skip to the next account
+                }
 
-                if (metadata) {
+                try {
+                    // Decode metadata
                     const metadataData = decodeMetadata(metadata.data);
-                    console.log('Decoded metadata:', metadataData); // Debugging line
+                    console.log('Decoded metadata:', metadataData); // Log decoded metadata
+
+                    // Check if collection ID matches
                     if (metadataData && metadataData.collection && metadataData.collection.address === COLLECTION_ID) {
                         return true; // NFT found in collection
                     }
-                } else {
-                    console.log(`No metadata found for mint address: ${mintAddress}`);
+                } catch (error) {
+                    console.error('Error decoding metadata:', error);
                 }
             }
             return false; // No NFT found
