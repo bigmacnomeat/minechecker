@@ -58,17 +58,30 @@
 
         // Function to check NFT ownership using Solscan API
         async function checkNFTOwnership(address) {
-            const response = await fetch(`https://public-api.solscan.io/account/tokens?account=${address}`);
-            const data = await response.json();
+            try {
+                const response = await fetch(`https://public-api.solscan.io/account/tokens?account=${address}`);
 
-            if (data && data.data) {
-                for (let token of data.data) {
-                    if (token.tokenAddress === COLLECTION_ID) {
-                        return true; // NFT found in collection
+                // Check if the response is OK (status in the range 200-299)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('API Response:', data); // Log the response for debugging
+
+                if (data && data.data) {
+                    // Iterate through the token data to find the collection ID
+                    for (let token of data.data) {
+                        if (token.tokenAddress === COLLECTION_ID) {
+                            return true; // NFT found in collection
+                        }
                     }
                 }
+                return false; // No NFT found
+            } catch (error) {
+                console.error('Error fetching data from Solscan:', error);
+                throw error; // Rethrow the error to be handled in the calling function
             }
-            return false; // No NFT found
         }
     </script>
 </body>
